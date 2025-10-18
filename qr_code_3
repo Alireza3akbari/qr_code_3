@@ -1,0 +1,39 @@
+# Create QR codes for multiple contacts at the same time
+import os
+import qrcode
+
+# Output folder
+out_dir = "qrcodes"
+os.makedirs(out_dir, exist_ok=True)  # Create folder if it doesn't exist
+
+# Number of contacts
+n = int(input("How many contacts:"))
+
+for i in range(n):
+    print(f"\nContact {i+1}:")
+    name = input("Enter your name: ")
+    family = input("Enter your family: ")
+    phone = input("Enter your phone number (+98*********): ")
+    email = input("Enter your email address (optional): ")
+
+    # Create vCard text
+    vcard_text = f"""BEGIN:VCARD
+VERSION:3.0
+N:{family};{name};;;
+FN:{name} {family}
+TEL;TYPE=CELL:{phone}
+EMAIL;TYPE=INTERNET:{email}
+END:VCARD"""
+
+    # Generate QR code
+    img = qrcode.make(vcard_text)
+    
+    # Create a safe filename
+    safe_name = (name + "_" + family).replace(" ", "_")
+    filename = f"{safe_name}_{phone}.png"
+    out_path = os.path.join(out_dir, filename)
+    
+    # Save the QR code image
+    img.save(out_path)
+
+    print(f"QR code saved -> {out_path}")
